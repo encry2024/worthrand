@@ -19,6 +19,39 @@
 
     @if (auth()->user()->roles_label == 'Secretary')
         <div class="form-group row">
+            {{ html()->label(__('validation.attributes.backend.indented-proposals.purchase_order'))->class('col-md-3 form-control-label')->for('purchase_order') }}
+
+            <div class="col-sm-9">
+                {{
+                    html()->text('purchase_order')
+                    ->class('form-control')
+                    ->placeholder(__('validation.attributes.backend.indented-proposals.purchase_order'))
+                    ->attribute('maxlength', 60)
+                    ->value($model->purchase_order)
+                    ->required()
+                }}
+            </div>
+        </div><!--form-group-->
+    @else
+        <div class="form-group row">
+            {{ html()->label(__('validation.attributes.backend.indented-proposals.purchase_order'))->class('col-md-3 form-control-label')->for('purchase_order') }}
+
+            <div class="col-sm-9">
+                {{
+                    html()->text('purchase_order')
+                    ->class('form-control')
+                    ->placeholder(__('validation.attributes.backend.indented-proposals.purchase_order'))
+                    ->attribute('maxlength', 60)
+                    ->attribute('readonly')
+                    ->value($model->purchase_order)
+                    ->required()
+                }}
+            </div>
+        </div><!--form-group-->
+    @endif
+
+    @if (auth()->user()->roles_label == 'Secretary')
+        <div class="form-group row">
             {{ html()->label(__('validation.attributes.backend.indented-proposals.wpc_reference'))->class('col-md-3 form-control-label')->for('wpc_reference') }}
 
             <div class="col-sm-9">

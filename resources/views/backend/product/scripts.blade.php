@@ -96,7 +96,7 @@
         $("#add_product_btn").on('click', function () {
             let product_list = "";
             let product = $("#product_container option:selected");
-            const remove_btn = "<div class='btn-group btn-group-sm' role='group' aria-label='Project Actions'><button class='btn btn-danger remove_product'><i class='fa fa-remove'></i></button></div>";
+            const remove_btn = "<div class='btn-group btn-group-sm pull-right' role='group' aria-label='Project Actions'><button class='btn btn-danger remove_product'><i class='fa fa-remove'></i></button></div>";
 
             if ( ! product.val()) {
                 swal({
@@ -118,8 +118,8 @@
                     product_id_list.push(product.val());
 
                     product_list = "<tr data-value='"+ product.val() +"'>";
-                    product_list += "<td>"+ product.text() +"</td>";
-                    product_list += "<td>"+ remove_btn +"</td>";
+                    product_list += "<td style='line-height: 27px;'>"+ product.text() + remove_btn +"</td>";
+                    // product_list += "<td>"+ remove_btn +"</td>";
                     product_list += "</tr>";
 
                     $("#product_list_container").append(product_list);
@@ -152,7 +152,7 @@
         });
 
         // Pass the data to Create Proposal page
-        $("#submit_btn").on('click', function () {
+        $("#indented_btn").on('click', function () {
             if (product_id_list.length <= 0) {
                 swal({
                     title: 'There are no added products to submit. Add at least 1 product.',
@@ -174,7 +174,42 @@
                             data: {
                                 _token: '{{ csrf_token() }}',
                                 requests: product_id_list,
-                                redirect_to: "{{ $parent_page }}"
+                                redirect_to: "{{ route('admin.indented-proposal.create') }}"
+                            },
+                            dataType: 'JSON',
+                            success: function (data) {
+                                window.location = data;
+                            }
+                        });
+                    }
+                })
+            }
+        });
+
+        // Pass the data to Create Proposal page
+        $("#buy_and_resale_btn").on('click', function () {
+            if (product_id_list.length <= 0) {
+                swal({
+                    title: 'There are no added products to submit. Add at least 1 product.',
+                    confirmButtonText: 'Ok',
+                    type: 'warning'
+                });
+            } else {
+                swal({
+                    title: 'Are you sure you have confirmed the products on the list?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+                    type: 'warning'
+                }).then(result => {
+                    if (result.value) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ route("admin.product.add-product") }}',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                requests: product_id_list,
+                                redirect_to: "{{ route('admin.buy-and-resale-proposal.create') }}"
                             },
                             dataType: 'JSON',
                             success: function (data) {

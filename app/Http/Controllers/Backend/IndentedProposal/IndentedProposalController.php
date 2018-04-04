@@ -98,7 +98,7 @@ class IndentedProposalController extends Controller
 
         $this->indentedProposalRepository->create($request->except('_token'));
 
-        return redirect()->back()->withFlashSuccess(__('alerts.indented_proposals.created', ['indented_proposal' => $request->po_number]));
+        return redirect()->back()->withFlashSuccess(__('alerts.backend.indented_proposals.created', ['indented_proposal' => $request->po_number]));
     }
 
     /**

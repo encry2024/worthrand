@@ -132,7 +132,26 @@ class IndentedProposalRepository extends BaseRepository
                     $indented_proposal_item->status                             = 'PROCESSING';
                     $indented_proposal_item->notify_me_after                    = 30;
                     $indented_proposal_item->notification_date                  = date('Y-m-d');
-                    $indented_proposal_item->save();
+                    
+                    if ($indented_proposal_item->save()) {
+                        $product_object = $product_model::find($product_id);
+                        $foreign_key = strtolower($product_object->data_model).'_id';
+                        $pricing_history_model = $product_model.'PricingHistory';
+
+                        $pricing_history                = new $pricing_history_model;
+                        $pricing_history->po_number     = 'N/A';
+                        $pricing_history->$foreign_key  = $product_id;
+                        $pricing_history->pricing_date  = date('Y-m-d');
+                        $pricing_history->price         = $indented_proposal_item->price;
+                        $pricing_history->terms         = "30-days";
+                        $pricing_history->delivery      = "TEST DELIVERY";
+                        $pricing_history->fpd_reference = "TEST_FPD_REFERENCE";
+                        $pricing_history->wpc_reference = $indented_proposal->wpc_reference;
+
+                        if ($pricing_history->save()) {
+                            $product_object->update(['price' => $pricing_history->price]);
+                        }
+                    }
 
                     $i++;
                 }
@@ -294,6 +313,7 @@ class IndentedProposalRepository extends BaseRepository
         return DB::transaction(function () use ($indented_proposal, $data) {
             if ($indented_proposal->update([
                 'collection_status'         => 'DELIVERY',
+                'purchase_order'            => $data['purchase_order'],
                 'wpc_reference'             => $data['wpc_reference'],
                 'special_instruction'       => $data['special_instruction'],
                 'ship_via'                  => $data['ship_via'],
@@ -301,7 +321,7 @@ class IndentedProposalRepository extends BaseRepository
                 'packing'                   => $data['packing'],
                 'documents'                 => $data['documents'],
                 'insurance'                 => $data['insurance'],
-                'bank_detail_name'  => $data['bank_detail_name'],
+                'bank_detail_name'          => $data['bank_detail_name'],
                 'bank_detail_address'       => $data['bank_detail_address'],
                 'bank_detail_account_no'    => $data['bank_detail_account_no'],
                 'bank_detail_swift_code'    => $data['bank_detail_swift_code'],
@@ -372,6 +392,7 @@ class IndentedProposalRepository extends BaseRepository
             $user = User::find($indented_proposal->user_id);
             $target_revenue = TargetRevenue::where('user_id', $user->id)->latest()->first();
 
+
             $total_collected = 0;
             $total_price = 0;
 
@@ -395,7 +416,7 @@ class IndentedProposalRepository extends BaseRepository
                     $target_revenue_history->save();
                 }
 
-                $target_revenue->current_sale = $total_collected;
+                $target_revenue->current_sale = $total_collected + $target_revenue->current_sale;
                 $target_revenue->save();
 
                 return $indented_proposal;

@@ -33,7 +33,7 @@
                     <div class="form-group row">
                         <label for="target_revenue" class="col-md-2 form-control-label">Current Revenue</label>
                         <div class="col-md-10">
-                            <input value="{{ $user->target_revenues ? $user->target_revenues->last()->current_sale : 'N/A' }}" type="text" name="target_revenue" class="form-control" id="current_target_revenue" disabled>
+                            <input value="{{ $user->target_revenues ? number_format($user->target_revenues->last()->current_sale, 2) : 'N/A' }}" type="text" name="target_revenue" class="form-control" id="current_target_revenue" disabled>
                         </div><!--col-->
                     </div><!--form-group-->
 

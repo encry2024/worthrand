@@ -45,6 +45,12 @@
             </li>
             @endif
 
+            @if (auth()->user()->roles_label == 'Sales Agent')
+            <li class="nav-item">
+                <a class="nav-link {{ active_class(Active::checkUriPattern('admin/product*')) }}" href="{{ route('admin.product.index') }}"><i class="fa fa-shopping-cart"></i> Make A Proposal</a>
+            </li>
+            @endif
+
             <li class="nav-title">
                 {{ __('menus.backend.sidebar.system') }}
             </li>

@@ -111,7 +111,6 @@
                 <table class="table table-bordered">
                     <thead>
                         <th>Product</th>
-                        <th>Action</th>
                     </thead>
 
                     <tbody id="product_list_container">
@@ -130,7 +129,15 @@
             </div><!--col-->
 
             <div class="col text-right">
-                <a href="#" class="btn btn-success" id="submit_btn">Submit</a>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Create
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a href="#" class="dropdown-item" id="indented_btn">Indented Proposal</a>
+                        <a href="#" class="dropdown-item" id="buy_and_resale_btn">Buy & Resale Proposal</a>
+                    </div>
+                </div>
             </div><!--col-->
         </div><!--row-->
     </div>

@@ -7,7 +7,13 @@ Route::group([
     'namespace'  => 'BuyAndResaleProposal',
 ], function () {
 
-    Route::get('buy-and-resale-proposal/deleted', 'BuyAndResaleProposalStatusController@getDeleted')->name('buy-and-resale.deleted');
+    Route::get('buy-and-resale-proposal/deleted', 'BuyAndResaleProposalStatusController@getDeleted')->name('buy-and-resale-proposal.deleted');
+    Route::patch('buy-and-resale-proposal/{buyAndResaleProposal}/accept', 'BuyAndResaleProposalStatusController@acceptProposal')->name('buy-and-resale-proposal.accept');
+    Route::patch('buy-and-resale-proposal/{buyAndResaleProposal}/send-to-assistant', 'BuyAndResaleProposalStatusController@sendToAssistant')->name('buy-and-resale-proposal.send-to-assistant');
+    Route::patch('buy-and-resale-proposal/{buyAndResaleProposal}/send-to-collector', 'BuyAndResaleProposalStatusController@sendToCollector')->name('buy-and-resale-proposal.send-to-collector');
+    Route::patch('buy-and-resale-proposal/{buyAndResaleProposal}/collect', 'BuyAndResaleProposalStatusController@collect')->name('buy-and-resale-proposal.collect');
+
+    Route::patch('buy-and-resale-proposal/item/{item}/delivery-status', 'BuyAndResaleProposalController@changeItemDeliveryStatus')->name('buy-and-resale-proposal.update-item-delivery');
 
     Route::resource('buy-and-resale-proposal', 'BuyAndResaleProposalController');
 

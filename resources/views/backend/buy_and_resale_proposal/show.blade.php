@@ -1,9 +1,9 @@
 @extends ('backend.layouts.app')
 
-@section ('title', __('labels.backend.indented_proposals.management') . ' | ' . __('labels.backend.indented_proposals.view'))
+@section ('title', __('labels.backend.buy-and-resale-proposals.management') . ' | ' . __('labels.backend.buy-and-resale-proposals.view'))
 
 @section('breadcrumb-links')
-    @include('backend.indented_proposal.includes.breadcrumb-links')
+    @include('backend.buy_and_resale_proposal.includes.breadcrumb-links')
 @endsection
 
 @section('content')
@@ -15,7 +15,7 @@
         <div class="alert alert-warning" role="alert">OVERALL STATUS: {{ strtoupper($model->collection_status) }}</div>
     @elseif ($model->collection_status == "FOR-COLLECTION")
         <div class="alert alert-success" role="alert">OVERALL STATUS: {{ strtoupper($model->collection_status) }}</div>
-    @elseif ($model->collection_status == "FOR-COLLECTION")
+    @elseif ($model->collection_status == "COMPLETED")
         <div class="alert alert-success" role="alert">OVERALL STATUS: {{ strtoupper($model->collection_status) }}</div>
     @endif
 
@@ -24,8 +24,8 @@
             <div class="row">
                 <div class="col-sm-5">
                     <h4 class="card-title mb-0">
-                        {{ __('labels.backend.indented_proposals.management') }}
-                        <small class="text-muted">{{ __('labels.backend.indented_proposals.view', ['indented_proposal' => $model->name]) }}</small>
+                        {{ __('labels.backend.buy-and-resale-proposals.management') }}
+                        <small class="text-muted">{{ __('labels.backend.buy-and-resale-proposals.view', ['indented_proposal' => $model->name]) }}</small>
                     </h4>
                 </div><!--col-->
 
@@ -62,7 +62,7 @@
                 <div class="col">
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-expanded="true"><i class="fa fa-clipboard"></i> {{ __('labels.backend.indented_proposals.tabs.titles.overview') }}</a>
+                            <a class="nav-link active" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-expanded="true"><i class="fa fa-clipboard"></i> {{ __('labels.backend.buy-and-resale-proposals.tabs.titles.overview') }}</a>
                         </li>
 
                         <li class="nav-item">
@@ -73,36 +73,36 @@
                     <div class="tab-content">
                         <div class="tab-pane active" id="overview" role="tabpanel" aria-expanded="true">
                             @if (auth()->user()->roles_label == 'Administrator')
-                            <form action="{{ route('admin.indented-proposal.accept', $model->id) }}" method="POST" name="accept_proposal">
+                            <form action="{{ route('admin.buy-and-resale-proposal.accept', $model->id) }}" method="POST" name="accept_proposal">
                                 {{ csrf_field() }}
                                 {{ method_field('PATCH') }}
-                                @include('backend.indented_proposal.show.tabs.overview')
+                                @include('backend.buy_and_resale_proposal.show.tabs.overview')
                             </form>
                             @elseif (auth()->user()->roles_label == 'Secretary')
-                            <form action="{{ route('admin.indented-proposal.send-to-assistant', $model->id) }}" method="POST" name="accept_proposal">
+                            <form action="{{ route('admin.buy-and-resale-proposal.send-to-assistant', $model->id) }}" method="POST" name="accept_proposal">
                                 {{ csrf_field() }}
                                 {{ method_field('PATCH') }}
-                                @include('backend.indented_proposal.show.tabs.overview')
+                                @include('backend.buy_and_resale_proposal.show.tabs.overview')
                             </form>
                             @elseif (auth()->user()->roles_label == 'Assistant')
-                            <form action="{{ route('admin.indented-proposal.send-to-collector', $model->id) }}" method="POST" name="accept_proposal">
+                            <form action="{{ route('admin.buy-and-resale-proposal.send-to-collector', $model->id) }}" method="POST" name="accept_proposal">
                                 {{ csrf_field() }}
                                 {{ method_field('PATCH') }}
-                                @include('backend.indented_proposal.show.tabs.overview')
+                                @include('backend.buy_and_resale_proposal.show.tabs.overview')
                             </form>
                             @elseif (auth()->user()->roles_label == 'Collector')
-                            <form action="{{ route('admin.indented-proposal.collect', $model->id) }}" method="POST" name="accept_proposal">
+                            <form action="{{ route('admin.buy-and-resale-proposal.collect', $model->id) }}" method="POST" name="accept_proposal">
                                 {{ csrf_field() }}
                                 {{ method_field('PATCH') }}
-                                @include('backend.indented_proposal.show.tabs.overview')
+                                @include('backend.buy_and_resale_proposal.show.tabs.overview')
                             </form>
                             @else
-                            @include('backend.indented_proposal.show.tabs.overview')
+                            @include('backend.buy_and_resale_proposal.show.tabs.overview')
                             @endif
                         </div><!--tab-->
 
                         <div class="tab-pane" id="purchased_products" role="tabpanel" aria-expanded="true">
-                            @include('backend.indented_proposal.show.tabs.purchased_products')
+                            @include('backend.buy_and_resale_proposal.show.tabs.purchased_products')
                         </div><!--tab-->
                     </div><!--tab-content-->
                 </div><!--col-->
@@ -113,10 +113,10 @@
             <div class="row">
                 <div class="col">
                     <small class="float-right text-muted">
-                        <strong>{{ __('labels.backend.indented_proposals.tabs.content.overview.created_at') }}:</strong> {{ date('F d, Y (h:i A)', strtotime($model->created_at)) }},
-                        <strong>{{ __('labels.backend.indented_proposals.tabs.content.overview.updated_at') }}:</strong> {{ date('F d, Y (h:i A)', strtotime($model->updated_at)) }}
+                        <strong>{{ __('labels.backend.buy-and-resale-proposals.tabs.content.overview.created_at') }}:</strong> {{ date('F d, Y (h:i A)', strtotime($model->created_at)) }},
+                        <strong>{{ __('labels.backend.buy-and-resale-proposals.tabs.content.overview.updated_at') }}:</strong> {{ date('F d, Y (h:i A)', strtotime($model->updated_at)) }}
                         @if ($model->trashed())
-                            <strong>{{ __('labels.backend.indented_proposals.tabs.content.overview.deleted_at') }}:</strong> {{ date('F d, Y (h:i A)', strtotime($model->deleted_at)) }}
+                            <strong>{{ __('labels.backend.buy-and-resale-proposals.tabs.content.overview.deleted_at') }}:</strong> {{ date('F d, Y (h:i A)', strtotime($model->deleted_at)) }}
                         @endif
                     </small>
                 </div><!--col-->
@@ -126,5 +126,5 @@
 @endsection
 
 @push('after-scripts')
-    @include('backend.indented_proposal.scripts.scripts')
+    @include('backend.buy_and_resale_proposal.scripts.scripts')
 @endpush
