@@ -34,7 +34,9 @@ Route::group([
                 // Assign Customer
                 Route::get('assign-customer', 'UserController@assignCustomer')->name('user.assign-customer');
                 Route::post('assign-customer', 'UserController@storeAssignedCustomer')->name('user.store.assigned-customer');
-
+                Route::get('target-revenue', 'UserController@targetRevenue')->name('user.target-revenue');
+                Route::post('target-revenue', 'UserController@setTargetRevenue')->name('user.set-revenue');
+                
                 // Account
                 Route::get('account/confirm/resend', 'UserConfirmationController@sendConfirmationEmail')->name('user.account.confirm.resend');
 

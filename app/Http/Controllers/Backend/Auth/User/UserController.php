@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Backend\Auth\User;
 
 use App\Models\Auth\User;
+use App\Models\TargetRevenue\TargetRevenue;
+use Auth;
 use App\Models\Customer\Customer;
 use App\Http\Controllers\Controller;
 use App\Events\Backend\Auth\User\UserDeleted;
@@ -141,8 +143,8 @@ class UserController extends Controller
     public function destroy(User $user, ManageUserRequest $request)
     {
         $this->userRepository->deleteById($user->id);
-
-        event(new UserDeleted($user));
+        $doer = Auth::user()->full_name;
+        event(new UserDeleted($doer, $user));
 
         return redirect()->route('admin.auth.user.deleted')->withFlashSuccess(__('alerts.backend.users.deleted'));
     }
@@ -173,5 +175,17 @@ class UserController extends Controller
         }
 
         return redirect()->back()->withFlashSuccess('Customer(s) ['.$customer_names.'] was assigned to Sales Engineer "'.$user->full_name.'"');
+    }
+
+    public function targetRevenue(User $user)
+    {
+        return view('backend.auth.user.target_revenue')->withUser($user);
+    }
+
+    public function setTargetRevenue(User $user, ManageUserRequest $request)
+    {
+        $this->userRepository->setRevenue($user, $request->only('target_sale'));
+
+        return redirect()->back()->with('You have successfully set user\'s target revenue');
     }
 }

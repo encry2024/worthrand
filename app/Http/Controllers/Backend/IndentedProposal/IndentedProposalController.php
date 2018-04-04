@@ -14,6 +14,7 @@ use App\Models\Project\Project;
 use App\Models\Aftermarket\Aftermarket;
 use App\Models\Seal\Seal;
 use App\Models\IndentedProposal\IndentedProposal;
+use App\Models\IndentedProposal\IndentedProposalItem;
 # Requests
 use App\Http\Requests\Backend\IndentedProposal\ManageIndentedProposalRequest;
 use App\Http\Requests\Backend\IndentedProposal\StoreIndentedProposalRequest;
@@ -143,5 +144,12 @@ class IndentedProposalController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function changeItemDeliveryStatus(IndentedProposalItem $item, Request $request)
+    {
+        $this->indentedProposalRepository->changeItemDeliveryStatus($item, $request->only('delivery_status'));
+
+        return redirect()->back();
     }
 }

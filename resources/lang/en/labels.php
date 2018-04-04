@@ -584,6 +584,7 @@ return [
                     'name'           => 'Name',
                     'first_name'     => 'First Name',
                     'last_name'      => 'Last Name',
+                    'target_revenue' => 'Target Revenue',
                     'no_deactivated' => 'No Deactivated Users',
                     'no_deleted'     => 'No Deleted Users',
                     'other_permissions' => 'Other Permissions',

@@ -4,6 +4,7 @@ namespace App\Repositories\Backend\Auth;
 
 use App\Models\Auth\User;
 use App\Models\Customer\Customer;
+use App\Models\TargetRevenue\TargetRevenue;
 use Auth;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\GeneralException;
@@ -365,7 +366,7 @@ class UserRepository extends BaseRepository
 
     public function storeAssignedCustomer(User $user, $data)
     {
-        DB::transaction(function () use ($user, $data) {
+        return DB::transaction(function () use ($user, $data) {
             foreach($data['customer'] as $customer_id) {
                 $customer = Customer::find($customer_id);
 
@@ -373,5 +374,21 @@ class UserRepository extends BaseRepository
                 $customer->save();
             }
         });
+    }
+
+    public function setRevenue(User $user, $data) : User
+    {
+        return DB::transaction(function () use ($user, $data) {
+            $target_revenue = new TargetRevenue();
+            $target_revenue->user_id = $user->id;
+            $target_revenue->target_sale = str_replace(',','',$data['target_sale']);
+            $target_revenue->current_sale = '0.00';
+
+            if ($target_revenue->save()) {
+                return $user;
+            }
+        });
+
+        throw new GeneralException('Set Target Revenue failed. Please validate your input.');
     }
 }

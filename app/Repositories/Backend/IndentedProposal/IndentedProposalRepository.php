@@ -19,7 +19,10 @@ use App\Models\Project\ProjectPricingHistory;
 use App\Models\Aftermarket\Aftermarket;
 use App\Models\Aftermarket\AftermarketPricingHistory;
 use App\Models\Seal\Seal;
+use App\Models\TargetRevenue\TargetRevenue;
+use App\Models\TargetRevenue\TargetRevenueHistory;
 use App\Models\Seal\SealPricingHistory;
+use App\Models\Auth\User;
 use Auth;
 # Exceptions
 use App\Exceptions\GeneralException;
@@ -283,6 +286,122 @@ class IndentedProposalRepository extends BaseRepository
             }
 
             throw new GeneralException(__('exceptions.backend.indented_proposals.update_error'));
+        });
+    }
+
+    public function sendToAssistant(IndentedProposal $indented_proposal, $data) : IndentedProposal
+    {
+        return DB::transaction(function () use ($indented_proposal, $data) {
+            if ($indented_proposal->update([
+                'collection_status'         => 'DELIVERY',
+                'wpc_reference'             => $data['wpc_reference'],
+                'special_instruction'       => $data['special_instruction'],
+                'ship_via'                  => $data['ship_via'],
+                'amount'                    => $data['amount'],
+                'packing'                   => $data['packing'],
+                'documents'                 => $data['documents'],
+                'insurance'                 => $data['insurance'],
+                'bank_detail_name'  => $data['bank_detail_name'],
+                'bank_detail_address'       => $data['bank_detail_address'],
+                'bank_detail_account_no'    => $data['bank_detail_account_no'],
+                'bank_detail_swift_code'    => $data['bank_detail_swift_code'],
+                'commission_note'           => $data['commission_note'],
+                'commission_address'        => $data['commission_address'],
+                'commission_account_number' => $data['commission_account_number'],
+                'commission_swift_code'     => $data['commission_swift_code'],
+            ]))
+
+            {
+                /*$auth_link = "<a href='".route('admin.auth.user.show', auth()->id())."'>".Auth::user()->full_name.'</a>';
+                $asset_link = "<a href='".route('admin.indented_proposal.show', $indented_proposal->id)."'>".$indented_proposal->name.'</a>';
+
+                event(new IndentedProposalUpdated($auth_link, $asset_link));*/
+
+                return $indented_proposal;
+            }
+
+            throw new GeneralException(__('exceptions.backend.indented_proposals.update_error'));
+        });
+    }
+
+    public function sendToCollection(IndentedProposal $indented_proposal) : IndentedProposal
+    {
+        return DB::transaction(function () use ($indented_proposal) {
+            if ($indented_proposal->update([
+                'collection_status'   => 'FOR-COLLECTION'
+            ]))
+
+            {
+                /*$auth_link = "<a href='".route('admin.auth.user.show', auth()->id())."'>".Auth::user()->full_name.'</a>';
+                $asset_link = "<a href='".route('admin.indented_proposal.show', $indented_proposal->id)."'>".$indented_proposal->name.'</a>';
+
+                event(new IndentedProposalUpdated($auth_link, $asset_link));*/
+
+                return $indented_proposal;
+            }
+
+            throw new GeneralException(__('exceptions.backend.indented_proposals.update_error'));
+        });
+    }
+
+    public function changeItemDeliveryStatus(IndentedProposalItem $item, $data)
+    {
+        return DB::transaction(function () use ($item, $data) {
+            if ($item->update(['status' => $data['delivery_status']])) {
+                return $item;
+            }
+
+            throw new GeneralException('Updating item delivery status failed.');
+        });
+    }
+
+    public function sendToCollector(IndentedProposal $indented_proposal, $data) : IndentedProposal
+    {
+        return DB::transaction(function () use ($indented_proposal, $data) {
+            if ($indented_proposal->update(['collection_status' => 'FOR-COLLECTION'])) {
+                return $indented_proposal;
+            }
+
+            throw new Exception('Updating Proposal\'s collection status failed. Please contact the administrator.');
+        });
+    }
+
+    public function collect(IndentedProposal $indented_proposal) : IndentedProposal
+    {
+        return DB::transaction(function () use ($indented_proposal) {
+            $user = User::find($indented_proposal->user_id);
+            $target_revenue = TargetRevenue::where('user_id', $user->id)->latest()->first();
+
+            $total_collected = 0;
+            $total_price = 0;
+
+            if ($indented_proposal->update([
+                'collection_status' => 'COMPLETED'
+            ])) 
+
+            {
+                $items = $indented_proposal->indented_proposal_items;
+
+                foreach ($items as $item) {
+                    $total_collected += $item->price * $item->quantity;
+                    $total_price = $item->price * $item->quantity;
+
+                    $target_revenue_history = new TargetRevenueHistory();
+                    $target_revenue_history->target_revenue_id = $target_revenue->id;
+                    $target_revenue_history->collected = $total_price;
+                    $target_revenue_history->date = date('Y-m-d');
+                    $target_revenue_history->target_revenue_historable_type = 'App\\Models\\IndentedProposal\\IndentedProposal';
+                    $target_revenue_history->target_revenue_historable_id = $indented_proposal->id;
+                    $target_revenue_history->save();
+                }
+
+                $target_revenue->current_sale = $total_collected;
+                $target_revenue->save();
+
+                return $indented_proposal;
+            }
+
+            throw new GeneralException('Updating proposal status failed.');
         });
     }
 }

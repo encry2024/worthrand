@@ -25,6 +25,11 @@ Breadcrumbs::register('admin.auth.user.assign-customer', function ($breadcrumbs,
     $breadcrumbs->push('Assign Customer', route('admin.auth.user.assign-customer', $user->id));
 });
 
+Breadcrumbs::register('admin.auth.user.target-revenue', function ($breadcrumbs, $user) {
+    $breadcrumbs->parent('admin.auth.user.show', route('admin.auth.user.show', $user->id));
+    $breadcrumbs->push('Target Revenue', route('admin.auth.user.target-revenue', $user->id));
+});
+
 Breadcrumbs::register('admin.auth.user.show', function ($breadcrumbs, $id) {
     $breadcrumbs->parent('admin.auth.user.index');
     $breadcrumbs->push(__('menus.backend.access.users.view'), route('admin.auth.user.show', $id));

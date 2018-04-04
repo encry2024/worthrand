@@ -177,6 +177,18 @@ trait UserAttribute
     /**
      * @return string
      */
+    public function getTargetRevenueButtonAttribute()
+    {
+        if ($this->roles_label == 'Sales Agent') {
+            return '<a href="'.route('admin.auth.user.target-revenue', $this).'" class="dropdown-item">Target Revenue</a> ';
+        }
+
+        return '';
+    }
+
+    /**
+     * @return string
+     */
     public function getStatusButtonAttribute()
     {
         if ($this->id != auth()->id()) {
@@ -251,7 +263,11 @@ trait UserAttribute
      */
     public function getAssignCustomerButtonAttribute()
     {
-        return '<a href="'.route('admin.auth.user.assign-customer', $this).'" class="dropdown-item" name="assign_customer">Assign Customer</a> ';
+        if ($this->roles_label == 'Sales Agent') {
+            return '<a href="'.route('admin.auth.user.assign-customer', $this).'" class="dropdown-item" name="assign_customer">Assign Customer</a> ';
+        }
+
+        return '';
     }
 
     /**
@@ -259,7 +275,7 @@ trait UserAttribute
      */
     public function getActionButtonsAttribute()
     {
-        if ($this->roles_label == 'Sales Agent') {
+        if ($this->roles_label == 'Sales Engineer') {
             return '
                 <div class="btn-group btn-group-sm" role="group" aria-label="User Actions">
                   '.$this->show_button.'
@@ -306,6 +322,8 @@ trait UserAttribute
 			  '.$this->status_button.'
 			  '.$this->confirmed_button.'
 			  '.$this->delete_button.'
+              '.$this->assign_customer_button.'
+              '.$this->target_revenue_button.'
 			</div>
 		  </div>
 		</div>';

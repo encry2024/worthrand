@@ -11,6 +11,10 @@
         <div class="alert alert-info" role="alert">OVERALL STATUS: {{ strtoupper($model->collection_status) }}</div>
     @elseif ($model->collection_status == "ACCEPTED")
         <div class="alert alert-primary" role="alert">OVERALL STATUS: {{ strtoupper($model->collection_status) }}</div>
+    @elseif ($model->collection_status == "DELIVERY")
+        <div class="alert alert-warning" role="alert">OVERALL STATUS: {{ strtoupper($model->collection_status) }}</div>
+    @elseif ($model->collection_status == "FOR-COLLECTION")
+        <div class="alert alert-success" role="alert">OVERALL STATUS: {{ strtoupper($model->collection_status) }}</div>
     @elseif ($model->collection_status == "FOR-COLLECTION")
         <div class="alert alert-success" role="alert">OVERALL STATUS: {{ strtoupper($model->collection_status) }}</div>
     @endif
@@ -29,36 +33,24 @@
                     <div class="btn-toolbar float-right" role="toolbar" aria-label="Toolbar with button groups">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Project Actions">
                             @if (auth()->user()->roles_label == 'Administrator')
-                                <a href="#" class="btn btn-success ml-1 text-white" data-toggle="tooltip" title="Accept Proposal" id="accept_proposal" data-value="{{ $model->id }}"><i class="fa fa-check"></i></a>
-                                <form action="{{ route('admin.indented-proposal.accept', $model->id) }}" method="POST" name="accept_proposal">
-                                    {{ csrf_field() }}
-                                    {{ method_field('PATCH') }}
-                                </form>
-                                <a href="#" class="btn btn-danger ml-1" data-toggle="tooltip" title="Cancel Proposal" id="cancel_proposal" data-value="{{ $model->id }}"><i class="fa fa-ban"></i></a>
-                                @if ($model->trashed())
-                                    <a href="{{ route('admin.indented_proposal.restore', $model->id) }}" name="confirm_item" class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Restore Project"><i class="fa fa-refresh"></i></a>
+                                @if ($model->collection_status == 'PENDING')
+                                    <a href="#" class="btn btn-success ml-1 text-white" data-toggle="tooltip" title="Accept Proposal" id="accept_proposal"><i class="fa fa-check"></i></a>
+                                    <a href="#" class="btn btn-danger ml-1" data-toggle="tooltip" title="Cancel Proposal" id="cancel_proposal"><i class="fa fa-ban"></i></a>
+                                @else
+                                    <a href="#" class="btn btn-danger ml-1" data-toggle="tooltip" title="Cancel Proposal" id="cancel_proposal"><i class="fa fa-ban"></i></a>
                                 @endif
                             @elseif (auth()->user()->roles_label == 'Secretary')
-                                <a href="#" class="btn btn-success ml-1 text-white" data-toggle="tooltip" title="Accept Proposal" id="accept_proposal" data-value="{{ $model->id }}"><i class="fa fa-check"></i></a>
-                                <form action="{{ route('admin.indented-proposal.send-to-assistant', $model->id) }}" method="POST" name="accept_proposal">
-                                    {{ csrf_field() }}
-                                    {{ method_field('PATCH') }}
-                                </form>
-                                <a href="#" class="btn btn-danger ml-1" data-toggle="tooltip" title="Cancel Proposal" id="cancel_proposal" data-value="{{ $model->id }}"><i class="fa fa-ban"></i></a>
+                                @if ($model->collection_status == 'ACCEPTED')
+                                    <a href="#" class="btn btn-success ml-1 text-white" data-toggle="tooltip" title="Accept Proposal" id="accept_proposal"><i class="fa fa-check"></i></a>
+                                @endif
                             @elseif (auth()->user()->roles_label == 'Assistant')
-                                <a href="#" class="btn btn-success ml-1 text-white" data-toggle="tooltip" title="Accept Proposal" id="accept_proposal" data-value="{{ $model->id }}"><i class="fa fa-check"></i></a>
-                                <form action="{{ route('admin.indented-proposal.send-to-collection', $model->id) }}" method="POST" name="accept_proposal">
-                                    {{ csrf_field() }}
-                                    {{ method_field('PATCH') }}
-                                </form>
-                                <a href="#" class="btn btn-danger ml-1" data-toggle="tooltip" title="Cancel Proposal" id="cancel_proposal" data-value="{{ $model->id }}"><i class="fa fa-ban"></i></a>
-                            @elseif (auth()->user()->roles_label == 'Collection')
-                                <a href="#" class="btn btn-success ml-1 text-white" data-toggle="tooltip" title="Accept Proposal" id="accept_proposal" data-value="{{ $model->id }}"><i class="fa fa-check"></i></a>
-                                <form action="{{ route('admin.indented-proposal.accept', $model->id) }}" method="POST" name="accept_proposal">
-                                    {{ csrf_field() }}
-                                    {{ method_field('PATCH') }}
-                                </form>
-                                <a href="#" class="btn btn-danger ml-1" data-toggle="tooltip" title="Cancel Proposal" id="cancel_proposal" data-value="{{ $model->id }}"><i class="fa fa-ban"></i></a>
+                                @if ($model->collection_status == 'DELIVERY')
+                                    <a href="#" class="btn btn-success ml-1 text-white" data-toggle="tooltip" title="Accept Proposal" id="accept_proposal"><i class="fa fa-check"></i></a>
+                                @endif
+                            @elseif (auth()->user()->roles_label == 'Collector')
+                                @if ($model->collection_status == 'FOR-COLLECTION')
+                                    <a href="#" class="btn btn-success ml-1 text-white" data-toggle="tooltip" title="Accept Proposal" id="accept_proposal"><i class="fa fa-check"></i></a>
+                                @endif
                             @endif
                         </div>
                     </div><!--btn-toolbar-->
@@ -79,7 +71,31 @@
 
                     <div class="tab-content">
                         <div class="tab-pane active" id="overview" role="tabpanel" aria-expanded="true">
-                            @include('backend.indented_proposal.show.tabs.overview')
+                            @if (auth()->user()->roles_label == 'Administrator')
+                            <form action="{{ route('admin.indented-proposal.accept', $model->id) }}" method="POST" name="accept_proposal">
+                                {{ csrf_field() }}
+                                {{ method_field('PATCH') }}
+                                @include('backend.indented_proposal.show.tabs.overview')
+                            </form>
+                            @elseif (auth()->user()->roles_label == 'Secretary')
+                            <form action="{{ route('admin.indented-proposal.send-to-assistant', $model->id) }}" method="POST" name="accept_proposal">
+                                {{ csrf_field() }}
+                                {{ method_field('PATCH') }}
+                                @include('backend.indented_proposal.show.tabs.overview')
+                            </form>
+                            @elseif (auth()->user()->roles_label == 'Assistant')
+                            <form action="{{ route('admin.indented-proposal.send-to-collector', $model->id) }}" method="POST" name="accept_proposal">
+                                {{ csrf_field() }}
+                                {{ method_field('PATCH') }}
+                                @include('backend.indented_proposal.show.tabs.overview')
+                            </form>
+                            @elseif (auth()->user()->roles_label == 'Collector')
+                            <form action="{{ route('admin.indented-proposal.collect', $model->id) }}" method="POST" name="accept_proposal">
+                                {{ csrf_field() }}
+                                {{ method_field('PATCH') }}
+                                @include('backend.indented_proposal.show.tabs.overview')
+                            </form>
+                            @endif
                         </div><!--tab-->
 
                         <div class="tab-pane" id="purchased_products" role="tabpanel" aria-expanded="true">

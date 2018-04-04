@@ -14,15 +14,15 @@ class UserDeleted
     /**
      * @var
      */
-    public $user;
     public $doer;
+    public $user;
 
     /**
      * @param $user
      */
-    public function __construct($user, $doer)
+    public function __construct($doer, $user)
     {
-        $this->user = $user;
         $this->doer = $doer;
+        $this->user = $user;
     }
 }

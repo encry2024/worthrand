@@ -9,4 +9,8 @@ class IndentedProposalItem extends Model
 {
     //
     use IndentedProposalItemRelationship;
+
+    protected $fillable = [
+        'status'
+    ];
 }

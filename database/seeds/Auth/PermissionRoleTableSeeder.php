@@ -22,11 +22,10 @@ class PermissionRoleTableSeeder extends Seeder
 
         // Create Roles
         $admin          = Role::create(['name' => config('access.users.admin_role')]);
-        $executive      = Role::create(['name' => 'executive']);
-        $user           = Role::create(['name' => config('access.users.default_role')]);
         $sales_agent    = Role::create(['name' => 'sales agent']);
         $secretary      = Role::create(['name' => 'secretary']);
-        $collection     = Role::create(['name' => 'collection']);
+        $assistant      = Role::create(['name' => 'assistant']);
+        $collector      = Role::create(['name' => 'collector']);
 
         // Create Permissions
         Permission::create(['name' => 'view backend']);
@@ -291,21 +290,38 @@ class PermissionRoleTableSeeder extends Seeder
         $secretary->givePermissionTo('upload buy and resale proposal');
 
         // Assign Permissions to other Roles
-        $collection->givePermissionTo('view backend');
+        $assistant->givePermissionTo('view backend');
+        // Give assistant full access of Indented Proposal Module
+        $assistant->givePermissionTo('view indented proposal');
+        $assistant->givePermissionTo('store indented proposal');
+        $assistant->givePermissionTo('accept indented proposal');
+        $assistant->givePermissionTo('update indented proposal');
+        $assistant->givePermissionTo('restore indented proposal');
+        $assistant->givePermissionTo('upload indented proposal');
+        // Give assistant full access of Buy and Resale Module
+        $assistant->givePermissionTo('view buy and resale proposal');
+        $assistant->givePermissionTo('store buy and resale proposal');
+        $assistant->givePermissionTo('accept buy and resale proposal');
+        $assistant->givePermissionTo('update buy and resale proposal');
+        $assistant->givePermissionTo('restore buy and resale proposal');
+        $assistant->givePermissionTo('upload buy and resale proposal');
+
+        // Assign Permissions to other Roles
+        $collector->givePermissionTo('view backend');
         // Give collection full access of Indented Proposal Module
-        $collection->givePermissionTo('view indented proposal');
-        $collection->givePermissionTo('collect indented proposal');
-        $collection->givePermissionTo('accept indented proposal');
-        $collection->givePermissionTo('update indented proposal');
-        $collection->givePermissionTo('restore indented proposal');
-        $collection->givePermissionTo('force delete indented proposal');
+        $collector->givePermissionTo('view indented proposal');
+        $collector->givePermissionTo('collect indented proposal');
+        $collector->givePermissionTo('accept indented proposal');
+        $collector->givePermissionTo('update indented proposal');
+        $collector->givePermissionTo('restore indented proposal');
+        $collector->givePermissionTo('force delete indented proposal');
         // Give collection full access of Buy and Resale Module
-        $collection->givePermissionTo('view buy and resale proposal');
-        $collection->givePermissionTo('collect buy and resale proposal');
-        $collection->givePermissionTo('accept buy and resale proposal');
-        $collection->givePermissionTo('update buy and resale proposal');
-        $collection->givePermissionTo('restore buy and resale proposal');
-        $collection->givePermissionTo('force delete buy and resale proposal');
+        $collector->givePermissionTo('view buy and resale proposal');
+        $collector->givePermissionTo('collect buy and resale proposal');
+        $collector->givePermissionTo('accept buy and resale proposal');
+        $collector->givePermissionTo('update buy and resale proposal');
+        $collector->givePermissionTo('restore buy and resale proposal');
+        $collector->givePermissionTo('force delete buy and resale proposal');
 
         $this->enableForeignKeys();
     }

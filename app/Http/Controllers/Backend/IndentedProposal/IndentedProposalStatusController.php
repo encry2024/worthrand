@@ -36,13 +36,43 @@ class IndentedProposalStatusController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Change indented proposal status to delivery status
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function sendToAssistant(IndentedProposal $indentedProposal, AcceptIndentedProposalRequest $request)
     {
-        //
+        $this->indentedProposalRepository->sendToAssistant($indentedProposal, $request->except('_token', '_method'));
+
+        return redirect()->back();
+    }
+
+    /**
+     * Change indented proposal status to FOR-COLLETION status
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendToCollector(IndentedProposal $indentedProposal, AcceptIndentedProposalRequest $request)
+    {
+        // dd($indentedProposal->indented_proposal_items);
+
+        $this->indentedProposalRepository->sendToCollector($indentedProposal, $request->except('_token', '_method'));
+
+        return redirect()->back();
+    }
+
+    /**
+     * Change indented proposal status to COMPLETED status
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function collect(IndentedProposal $indentedProposal, AcceptIndentedProposalRequest $request)
+    {
+        // dd($indentedProposal->indented_proposal_items);
+
+        $this->indentedProposalRepository->collect($indentedProposal);
+
+        return redirect()->back();
     }
 
     /**
