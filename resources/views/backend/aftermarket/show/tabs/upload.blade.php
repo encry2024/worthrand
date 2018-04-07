@@ -3,13 +3,13 @@
         <div id="dropzone">
             <form class="dropzone" id="dropZ" method="POST">
                 {{ csrf_field() }}
-                <input type="hidden" value="{{ $model->id }}" name="project_id">
+                <input type="hidden" value="{{ $model->id }}" name="aftermarket_id">
 
             </form>
         </div>
     </div>
 </div>
-<br>
+<br/>
 <div class="col">
     <table class="table table-hover">
         <thead>
@@ -23,8 +23,8 @@
                     <tr>
                         <td>{{ $file }}</td>
                         <td>
-                            <a class="btn btn-primary btn-sm" href="{{ asset('storage/project/'.$model->id.'/'.$file) }}" data-toggle="tooltip" title="View File"><i class="fa fa-search"></i></a>
-                            <a class="btn btn-warning btn-sm text-white download_file" href="{{ route('admin.project.download', [$model->id, $file]) }}"><i class="fa fa-download"></i></a>
+                            <a class="btn btn-primary btn-sm" href="{{ asset('storage/aftermarket/'.$model->id.'/'.$file) }}" data-toggle="tooltip" title="View File"><i class="fa fa-search"></i></a>
+                            <a class="btn btn-warning btn-sm text-white" href="{{ route('admin.aftermarket.download', [$model->id, $file]) }}"><i class="fa fa-download"></i></a>
                         </td>
                     </tr>
                 @endforeach

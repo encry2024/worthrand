@@ -20,6 +20,9 @@ Route::group([
         'prefix' => 'seal/{seal}',
         'as'     => 'seal.'
     ], function () {
+        Route::post('upload', 'SealController@uploadFile')->name('upload');
+        Route::get('{file}/download', 'SealController@downloadFile')->name('download');
+
         Route::resource('pricing_history', 'SealPricingHistoryController');
 
         Route::group(['prefix' => 'pricing_history/{deletedSealPricingHistory}'], function () {

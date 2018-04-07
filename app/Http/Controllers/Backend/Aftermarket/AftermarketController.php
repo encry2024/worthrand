@@ -7,6 +7,8 @@ use App\Events\Backend\Aftermarket\AftermarketDeleted;
 # Facades
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Storage;
+use File;
 # Models
 use App\Models\Aftermarket\Aftermarket;
 use App\Models\Customer\Customer;
@@ -18,6 +20,7 @@ use App\Http\Requests\Backend\Aftermarket\StoreAftermarketRequest;
 use App\Http\Requests\Backend\Aftermarket\CreateAftermarketRequest;
 use App\Http\Requests\Backend\Aftermarket\UpdateAftermarketRequest;
 use App\Http\Requests\Backend\Aftermarket\DeleteAftermarketRequest;
+use App\Http\Requests\Backend\Aftermarket\UploadAftermarketRequest;
 # Repository
 use App\Repositories\Backend\Aftermarket\AftermarketRepository;
 
@@ -77,7 +80,23 @@ class AftermarketController extends Controller
      */
     public function show(Aftermarket $aftermarket, ManageAftermarketRequest $request)
     {
-        return view('backend.aftermarket.show')->withModel($aftermarket);
+        $files = [];
+
+        if(!File::exists('storage/aftermarket/'.$aftermarket->id)) {
+            return view('backend.aftermarket.show')->withModel($aftermarket)->withFiles($files);
+        } else {
+            $files = collect(File::allFiles('storage/aftermarket/'.$aftermarket->id))->filter(function ($file) {
+                return in_array($file->getExtension(), ['png', 'pdf', 'jpg']);
+            })
+            ->sortByDesc(function ($file) {
+                return $file->getCTime();
+            })
+            ->map(function ($file) {
+                return $file->getBaseName();
+            });
+
+            return view('backend.aftermarket.show')->withModel($aftermarket)->withFiles($files);
+        }
     }
 
     /**
@@ -123,5 +142,17 @@ class AftermarketController extends Controller
         event(new AftermarketDeleted($auth_link, $asset_link));
 
         return redirect()->route('admin.aftermarket.deleted')->withFlashSuccess(__('alerts.backend.aftermarkets.deleted', ['aftermarket' => $aftermarket->name]));
+    }
+
+    public function uploadFile(Aftermarket $aftermarket, UploadAftermarketRequest $request)
+    {
+        $path = $request->file('file')->store('public/aftermarket/'.$aftermarket->id);
+
+        return $path;
+    }
+
+    public function downloadFile(Aftermarket $aftermarket, $file, UploadAftermarketRequest $request)
+    {
+        return Storage::download('public/aftermarket/'.$aftermarket->id.'/'.$file);
     }
 }

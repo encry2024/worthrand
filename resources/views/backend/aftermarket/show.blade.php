@@ -38,6 +38,10 @@
                         </li>
 
                         <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#upload" role="tab" aria-controls="upload" aria-expanded="true"><i class="fa fa-upload"></i> Uploaded Files</a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#pricing_history" role="tab" aria-controls="pricing_history" aria-expanded="true"><i class="fa fa-clock-o"></i> Pricing History</a>
                         </li>
 
@@ -49,6 +53,10 @@
                     <div class="tab-content">
                         <div class="tab-pane active" id="overview" role="tabpanel" aria-expanded="true">
                             @include('backend.aftermarket.show.tabs.overview')
+                        </div><!--tab-->
+
+                        <div class="tab-pane active" id="upload" role="tabpanel" aria-expanded="true">
+                            @include('backend.aftermarket.show.tabs.upload')
                         </div><!--tab-->
 
                         <div class="tab-pane" id="pricing_history" role="tabpanel" aria-expanded="true">
@@ -78,3 +86,15 @@
         </div><!--card-footer-->
     </div><!--card-->
 @endsection
+
+@push('after-scripts')
+<script>
+    Dropzone.autoDiscover = false;
+
+    var dropzoneField = new Dropzone("#dropZ", {
+        url: "{{ route('admin.aftermarket.upload', $model->id) }}",
+        addRemoveLinks: true,
+        dictDefaultMessage: "-Drag your files, or click to upload."
+    });
+</script>
+@endpush

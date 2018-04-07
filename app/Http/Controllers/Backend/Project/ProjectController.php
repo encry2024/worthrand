@@ -7,6 +7,8 @@ use App\Events\Backend\Project\ProjectDeleted;
 # Facades
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Storage;
+use File;
 # Models
 use App\Models\Project\Project;
 use App\Models\Customer\Customer;
@@ -18,6 +20,7 @@ use App\Http\Requests\Backend\Project\StoreProjectRequest;
 use App\Http\Requests\Backend\Project\CreateProjectRequest;
 use App\Http\Requests\Backend\Project\UpdateProjectRequest;
 use App\Http\Requests\Backend\Project\DeleteProjectRequest;
+use App\Http\Requests\Backend\Project\UploadProjectRequest;
 # Repository
 use App\Repositories\Backend\Project\ProjectRepository;
 
@@ -83,7 +86,21 @@ class ProjectController extends Controller
      */
     public function show(Project $project, ManageProjectRequest $request)
     {
-        return view('backend.project.show')->withModel($project);
+        if(!File::exists('storage/project/'.$project->id)) {
+            return view('backend.project.show')->withModel($project)->withFiles($files);
+        } else {
+            $files = collect(File::allFiles('storage/project/'.$project->id))->filter(function ($file) {
+                return in_array($file->getExtension(), ['png', 'pdf', 'jpg']);
+            })
+            ->sortByDesc(function ($file) {
+                return $file->getCTime();
+            })
+            ->map(function ($file) {
+                return $file->getBaseName();
+            });
+
+            return view('backend.project.show')->withModel($project)->withFiles($files);
+        }
     }
 
     /**
@@ -129,5 +146,17 @@ class ProjectController extends Controller
         event(new ProjectDeleted($auth_link, $asset_link));
 
         return redirect()->route('admin.project.deleted')->withFlashSuccess(__('alerts.backend.projects.deleted', ['project' => $project->name]));
+    }
+
+    public function uploadFile(Project $project, UploadProjectRequest $request)
+    {
+        $path = $request->file('file')->store('public/project/'.$project->id);
+
+        return $path;
+    }
+
+    public function downloadFile(Project $project, $file, UploadProjectRequest $request)
+    {
+        return Storage::download('public/project/'.$project->id.'/'.$file);
     }
 }

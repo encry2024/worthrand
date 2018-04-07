@@ -96,5 +96,9 @@
         addRemoveLinks: true,
         dictDefaultMessage: "-Drag your files, or click to upload."
     });
+
+    // $('.download_file').on('click', function(e) {
+    //     e.preventDefault();
+    // });
 </script>
 @endpush

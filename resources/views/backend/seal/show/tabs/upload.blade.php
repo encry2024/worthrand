@@ -3,7 +3,7 @@
         <div id="dropzone">
             <form class="dropzone" id="dropZ" method="POST">
                 {{ csrf_field() }}
-                <input type="hidden" value="{{ $model->id }}" name="project_id">
+                <input type="hidden" value="{{ $model->id }}" name="seal_id">
 
             </form>
         </div>
@@ -23,8 +23,8 @@
                     <tr>
                         <td>{{ $file }}</td>
                         <td>
-                            <a class="btn btn-primary btn-sm" href="{{ asset('storage/project/'.$model->id.'/'.$file) }}" data-toggle="tooltip" title="View File"><i class="fa fa-search"></i></a>
-                            <a class="btn btn-warning btn-sm text-white download_file" href="{{ route('admin.project.download', [$model->id, $file]) }}"><i class="fa fa-download"></i></a>
+                            <a class="btn btn-primary btn-sm" href="{{ asset('storage/seal/'.$model->id.'/'.$file) }}" data-toggle="tooltip" title="View File"><i class="fa fa-search"></i></a>
+                            <a class="btn btn-warning btn-sm text-white download_file" href="{{ route('admin.seal.download', [$model->id, $file]) }}"><i class="fa fa-download"></i></a>
                         </td>
                     </tr>
                 @endforeach

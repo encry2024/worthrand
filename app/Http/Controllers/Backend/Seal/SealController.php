@@ -7,6 +7,8 @@ use App\Events\Backend\Seal\SealDeleted;
 # Facades
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Storage;
+use File;
 # Model
 use App\Models\Seal\Seal;
 # Controllers
@@ -18,6 +20,7 @@ use App\Http\Requests\Backend\Seal\CreateSealRequest;
 use App\Http\Requests\Backend\Seal\EditSealRequest;
 use App\Http\Requests\Backend\Seal\UpdateSealRequest;
 use App\Http\Requests\Backend\Seal\DeleteSealRequest;
+use App\Http\Requests\Backend\Seal\UploadSealRequest;
 # Repository
 use App\Repositories\Backend\Seal\SealRepository;
 
@@ -77,7 +80,23 @@ class SealController extends Controller
      */
     public function show(Seal $seal, ManageSealRequest $request)
     {
-        return view('backend.seal.show')->withModel($seal);
+        $files = [];
+
+        if(!File::exists('storage/seal/'.$seal->id)) {
+            return view('backend.seal.show')->withModel($seal)->withFiles($files);
+        } else {
+            $files = collect(File::allFiles('storage/seal/'.$seal->id))->filter(function ($file) {
+                return in_array($file->getExtension(), ['png', 'pdf', 'jpg']);
+            })
+            ->sortByDesc(function ($file) {
+                return $file->getCTime();
+            })
+            ->map(function ($file) {
+                return $file->getBaseName();
+            });
+
+            return view('backend.seal.show')->withModel($seal)->withFiles($files);
+        }
     }
 
     /**
@@ -121,5 +140,17 @@ class SealController extends Controller
         event(new SealDeleted($auth_link, $asset_link));
 
         return redirect()->route('admin.seal.deleted')->withFlashSuccess(__('alerts.backend.seals.deleted', ['seal' => $seal->name]));
+    }
+
+    public function uploadFile(Seal $seal, UploadSealRequest $request)
+    {
+        $path = $request->file('file')->store('public/seal/'.$seal->id);
+
+        return $path;
+    }
+
+    public function downloadFile(Seal $seal, $file, UploadSealRequest $request)
+    {
+        return Storage::download('public/seal/'.$seal->id.'/'.$file);
     }
 }

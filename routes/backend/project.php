@@ -21,6 +21,7 @@ Route::group([
         'as'     => 'project.'
     ], function () {
         Route::post('upload', 'ProjectController@uploadFile')->name('upload');
+        Route::get('{file}/download', 'ProjectController@downloadFile')->name('download');
 
         Route::resource('pricing_history', 'ProjectPricingHistoryController');
 

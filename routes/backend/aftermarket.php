@@ -20,6 +20,9 @@ Route::group([
         'prefix' => 'aftermarket/{aftermarket}',
         'as'     => 'aftermarket.'
     ], function () {
+        Route::post('upload', 'AftermarketController@uploadFile')->name('upload');
+        Route::get('{file}/download', 'AftermarketController@downloadFile')->name('download');
+
         Route::resource('pricing_history', 'AftermarketPricingHistoryController');
 
         Route::group(['prefix' => 'pricing_history/{deletedAftermarketPricingHistory}'], function () {
