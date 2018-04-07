@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Backend\IndentedProposal;
 use Illuminate\Http\Request;
 use Session;
 use Auth;
+use Akaunting\Money\Money;
 # Controller
 use App\Http\Controllers\Controller;
 # Models
@@ -24,6 +25,7 @@ use App\Http\Requests\Backend\IndentedProposal\UpdateIndentedProposalRequest;
 use App\Http\Requests\Backend\IndentedProposal\DeleteIndentedProposalRequest;
 # Repositories
 use App\Repositories\Backend\IndentedProposal\IndentedProposalRepository;
+
 
 class IndentedProposalController extends Controller
 {

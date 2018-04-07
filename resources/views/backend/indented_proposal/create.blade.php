@@ -178,6 +178,7 @@
                                                     <option value="JPY">JPY</option>
                                                     <option value="USD">USD</option>
                                                     <option value="SGD">SGD</option>
+                                                    <option value="EUR">EUR</option>
                                                 </select>
                                             </div>
                                             <input type="text" name="price[]" class="form-control numeric-input"

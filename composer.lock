@@ -4,9 +4,70 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7b4ffb87d5b356ae568cc5eb55b2d703",
-    "content-hash": "d4c0a571aff872b643ee57fc1a3d570f",
+    "hash": "d0d07c41c724fe3710e14d6fe47bcc98",
+    "content-hash": "7b6b1c61e649b46d4cee45de673ea124",
     "packages": [
+        {
+            "name": "akaunting/money",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/akaunting/money.git",
+                "reference": "a39d0e18e1e56da8d82760528376fb797c161552"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/akaunting/money/zipball/a39d0e18e1e56da8d82760528376fb797c161552",
+                "reference": "a39d0e18e1e56da8d82760528376fb797c161552",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": ">=5.1",
+                "illuminate/view": ">=5.1",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "mockery/mockery": "~0.9",
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Akaunting\\Money\\Provider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Akaunting\\Money\\": "./src"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Denis Duliçi",
+                    "email": "info@akaunting.com",
+                    "homepage": "https://akaunting.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Currency formatting and conversion package for Laravel.",
+            "keywords": [
+                "convert",
+                "currency",
+                "format",
+                "laravel",
+                "money"
+            ],
+            "time": "2017-12-09 07:25:06"
+        },
         {
             "name": "appstract/laravel-blade-directives",
             "version": "0.4.6",

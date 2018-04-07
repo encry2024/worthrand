@@ -13,6 +13,8 @@
     <meta name="author" content="@yield('meta_author', 'Anthony Rappa')">
     <link rel="stylesheet" href="{{ asset('js/chosen_v1.8.3/chosen-bootstrap-css.css') }}">
     <link rel="stylesheet" href="{{ asset('js/chosen_v1.8.3/chosen.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/highcharts.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dropzone.css') }}">
     <link rel="stylesheet" href="{{ asset('js/notific8/dist/notific8.css') }}">
     @yield('meta')
 
@@ -20,6 +22,8 @@
     @stack('before-styles')
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/notific8/src/js/notific8.js') }}"></script>
+    <script src="{{ asset('js/highcharts.js') }}"></script>
+    <script src="{{ asset('js/dropzone.js') }}"></script>
     <script>
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),

@@ -20,6 +20,8 @@ Route::group([
         'prefix' => 'project/{project}',
         'as'     => 'project.'
     ], function () {
+        Route::post('upload', 'ProjectController@uploadFile')->name('upload');
+
         Route::resource('pricing_history', 'ProjectPricingHistoryController');
 
         Route::group(['prefix' => 'pricing_history/{deletedProjectPricingHistory}'], function () {

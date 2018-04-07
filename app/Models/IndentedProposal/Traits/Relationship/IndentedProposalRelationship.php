@@ -25,4 +25,11 @@ trait IndentedProposalRelationship
     {
         return $this->hasMany(IndentedProposalItem::class);
     }
+
+    public function total_profit()
+    {
+        return $this->hasMany(IndentedProposalItem::class)
+            ->selectRaw('indented_proposal_id, SUM(price) as total')
+            ->groupBy('indented_proposal_id');
+    }
 }
