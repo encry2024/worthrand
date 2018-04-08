@@ -29,7 +29,6 @@
                                     <hr>
                                     <h5 class="card-title">Target Sale:</h5>
                                     <h3>USD {{ number_format(Auth::user()->target_revenues->last()->target_sale, 2) }}</h3>
-                                    <hr>
                                 </div>
                             </div>
                         </div>

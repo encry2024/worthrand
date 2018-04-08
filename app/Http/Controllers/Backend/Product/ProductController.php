@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\Product;
 # Facades
 use Illuminate\Http\Request;
 use Session;
+use File;
 # Controller
 use App\Http\Controllers\Controller;
 # Models
@@ -36,6 +37,7 @@ class ProductController extends Controller
     public function get(Request $request)
     {
         $product_category = $request->category_id;
+        $files = [];
 
         if ($product_category == 1) {
             $projects = Project::all();

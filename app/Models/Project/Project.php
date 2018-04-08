@@ -63,6 +63,7 @@ class Project extends Model
         'data_5',
         'data_6', 
         'data_7',
-        'data_model'
+        'data_model',
+        'model_files'
     ];
 }

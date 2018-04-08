@@ -3,7 +3,8 @@
         const pump_details_container      = $("#pump_details_container"),
         product_container                 = $("#product_container"),
         spare_parts_description_container = $("#spare_parts_description_container"),
-        pricing_history_container         = $("#pricing_history_container");
+        pricing_history_container         = $("#pricing_history_container"),
+        uploaded_files_container          = $("#uploaded_files_container");
         let product_array                 = [];
         let product_id_list               = [];
 
@@ -25,6 +26,8 @@
                     let product_options = "";
                     product_array = data;
                     product_details(category_id);
+
+                    console.log(data);
 
                     if (data.length > 0) {
                         product_container.append('<option value=""></option>');
@@ -91,6 +94,13 @@
 
                 pricing_history_container.append(pricing_history_data);
             }
+
+            // let files = selected_product.model_files;
+            //console.log(selected_product.model_files);
+            uploaded_files_container.empty();
+            _.forEach(selected_product.model_files, function(element, i) {
+                uploaded_files_container.append(element);
+            }); 
         });
 
         $("#add_product_btn").on('click', function () {
@@ -223,6 +233,7 @@
 
         function clear_containers() {
             pricing_history_container.empty();
+            uploaded_files_container.empty();
             product_container.empty();
             product_container.chosen();
             product_container.trigger('chosen:updated');

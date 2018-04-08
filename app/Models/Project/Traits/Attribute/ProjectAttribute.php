@@ -3,11 +3,39 @@
 namespace App\Models\Project\Traits\Attribute;
 
 use Illuminate\Support\Facades\Route;
+use File;
 /**
  * Trait ProjectAttribute.
  */
 trait ProjectAttribute
 {
+    public function getModelFilesAttribute()
+    {
+        $file_controller = [];
+        $files = collect(File::allFiles('storage/project/'.$this->id))->filter(function ($file) {
+            return in_array($file->getExtension(), ['png', 'pdf', 'jpg']);
+        })
+        ->sortByDesc(function ($file) {
+            return $file->getCTime();
+        })
+        ->map(function ($file) {
+            return $file->getBaseName();
+        });
+
+        foreach($files as $file) {
+            $file_controller[] = 
+                '<tr>
+                <td>
+                '.$file.'
+                <a class="btn btn-warning btn-sm text-white pull-right" href="'.route('admin.project.download', [$this->id, $file]).'"><i class="fa fa-download"></i></a>
+                <a class="btn btn-primary btn-sm pull-right" href="'.asset('storage/project/'.$this->id.'/'.$file) .'" data-toggle="tooltip" title="View File"><i class="fa fa-search"></i></a>
+                </td>
+                </tr>';
+        }
+
+        return $file_controller;
+    }
+
     public function getData1Attribute()
     {
         return $this->status;

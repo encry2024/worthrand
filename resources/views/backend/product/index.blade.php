@@ -72,6 +72,26 @@
                     </div><!-- col -->
                 </div><!-- row -->
 
+                <!-- Uploaded Files -->
+                <h5 class="card-title">Uploaded Files</h5>
+                <hr>
+
+                <div class="row mt-4 mb-4">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <th>Uploded File</th>
+                            </thead>
+
+                            <tbody id="uploaded_files_container">
+                                <tr>
+                                    <td><p class="text-center">No description to show...</p></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Spare Parts Description -->
                 <h5 class="card-title">Spare Parts Description</h5>
                 <hr>
@@ -96,7 +116,6 @@
                     </div> <!-- col -->
                 </div> <!-- row -->
 
-                
             </div><!--card-body-->
         </div><!--card-->
 
