@@ -16,7 +16,7 @@
             <td>{{ $indented_proposal_item->quantity }}</td>
             <td>{{ $indented_proposal_item->currency }}</td>
             <td>{{ number_format($indented_proposal_item->price, 2) }}</td>
-            <td>{{ $indented_proposal_item->delivery }}</td>
+            <td>{{ $indented_proposal_item->delivery / 7 }}</td>
             <td>
                 @if (auth()->user()->roles_label == 'Assistant')
                 <form action="{{ route('admin.indented-proposal.update-item-delivery', $indented_proposal_item->id) }}" method="POST" name="update_item_delivery">
@@ -33,7 +33,8 @@
                     {{ $indented_proposal_item->status }}
                 @endif
             </td>
-            <td>{{ $indented_proposal_item->notification_date }}</td>
+            <?php $added_to_date = $indented_proposal_item->delivery / 7; ?>
+            <td>{{ date('Y-m-d', strtotime($indented_proposal_item->created_at. "+".$added_to_date." day")) }}</td>
         </tr>
         @endforeach
     </tbody>

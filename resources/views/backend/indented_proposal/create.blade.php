@@ -173,8 +173,8 @@
                                     <td>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <select name="currency[]" id="currency-dropdown" class="form-control chosen-select">
-                                                    <option value="PHP">PHP</option>
+                                                <select name="currency[]" id="currency-dropdown" data-amount="{{ is_null($ordered_product->latest_price) ? '' : $ordered_product->latest_price->price }}" class="form-control chosen-select currency-dropdown">
+                                                    <option value="PHP" selected>PHP</option>
                                                     <option value="JPY">JPY</option>
                                                     <option value="USD">USD</option>
                                                     <option value="SGD">SGD</option>
@@ -182,7 +182,8 @@
                                                 </select>
                                             </div>
                                             <input type="text" name="price[]" class="form-control numeric-input"
-                                            value="{{ is_null($ordered_product->latest_price) ? '' : number_format($ordered_product->latest_price->price, 2) }}">
+                                            id="price"
+                                            value="{{ is_null($ordered_product->latest_price) ? '' : $ordered_product->latest_price->price }}">
                                         </div>
                                     </td>
                                     <td>
@@ -212,3 +213,35 @@
     </div><!--card-->
     {{ html()->form()->close() }}
 @endsection
+
+@push('after-scripts')
+    <script>
+        const current_currency = $(".currency-dropdown");
+        current_currency.data("previous_currency", current_currency.val());
+
+        current_currency.change(function(data) {
+            var currency = $(this);
+            var old_curr = currency.data("previous_currency");
+            currency.data("previous_currency", currency.val());
+            var new_curr = currency.val();
+            let amount = currency.data('amount');
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('admin.currency.convert') }}",
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    from: old_curr,
+                    to: new_curr
+                },
+                dataType: 'JSON',
+                success: function(ratio) {
+                    
+                    total_currency = parseFloat(currency.attr('data-amount')).toFixed(2) * ratio;
+                    currency.attr('data-amount', total_currency.toFixed(2));
+                    currency.closest('tr').find('input#price').val(total_currency.toFixed(2));
+                }
+            });
+        });
+    </script>
+@endpush

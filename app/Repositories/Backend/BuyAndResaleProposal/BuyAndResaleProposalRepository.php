@@ -388,8 +388,14 @@ class BuyAndResaleProposalRepository extends BaseRepository
                 $items = $buy_and_resale_proposal->buy_and_resale_proposal_items;
 
                 foreach ($items as $item) {
-                    $total_collected += $item->price * $item->quantity;
-                    $total_price = $item->price * $item->quantity;
+                    $from = $item->currency;
+
+                    $url = file_get_contents('https://free.currencyconverterapi.com/api/v5/convert?q=' . $from . '_USD&compact=ultra');
+                    $json = json_decode($url, true);
+                    $rate = implode(" ", $json);
+
+                    $total_collected += ($item->price * $rate) * $item->quantity;
+                    $total_price = ($item->price * $rate) * $item->quantity;
 
                     $target_revenue_history = new TargetRevenueHistory();
                     $target_revenue_history->target_revenue_id = $target_revenue->id;

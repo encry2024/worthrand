@@ -85,7 +85,7 @@
 
                             <tbody id="uploaded_files_container">
                                 <tr>
-                                    <td><p class="text-center">No description to show...</p></td>
+                                    <td><p class="text-center">No uploaded files to show...</p></td>
                                 </tr>
                             </tbody>
                         </table>

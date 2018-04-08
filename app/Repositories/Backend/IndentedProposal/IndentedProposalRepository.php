@@ -128,9 +128,9 @@ class IndentedProposalRepository extends BaseRepository
                     $indented_proposal_item->quantity                           = $data['quantity'][$i];
                     $indented_proposal_item->price                              = str_replace(',','',$data['price'][$i]);
                     $indented_proposal_item->currency                           = $data['currency'][$i];
-                    $indented_proposal_item->delivery                           = $data['delivery_date'][$i];
+                    $indented_proposal_item->delivery                           = $data['delivery_date'][$i] * 7;
                     $indented_proposal_item->status                             = 'PROCESSING';
-                    $indented_proposal_item->notify_me_after                    = 30;
+                    $indented_proposal_item->notify_me_after                    = ($data['delivery_date'][$i] - 2) * 7;
                     $indented_proposal_item->notification_date                  = date('Y-m-d');
                     
                     if ($indented_proposal_item->save()) {
@@ -404,8 +404,14 @@ class IndentedProposalRepository extends BaseRepository
                 $items = $indented_proposal->indented_proposal_items;
 
                 foreach ($items as $item) {
-                    $total_collected += $item->price * $item->quantity;
-                    $total_price = $item->price * $item->quantity;
+                    $from = $item->currency;
+
+                    $url = file_get_contents('https://free.currencyconverterapi.com/api/v5/convert?q=' . $from . '_USD&compact=ultra');
+                    $json = json_decode($url, true);
+                    $rate = implode(" ", $json);
+
+                    $total_collected += ($item->price * $rate) * $item->quantity;
+                    $total_price = ($item->price * $rate) * $item->quantity;
 
                     $target_revenue_history = new TargetRevenueHistory();
                     $target_revenue_history->target_revenue_id = $target_revenue->id;

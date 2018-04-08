@@ -16,7 +16,7 @@
             <td>{{ $buy_and_resale_proposal_item->quantity }}</td>
             <td>{{ $buy_and_resale_proposal_item->currency }}</td>
             <td>{{ number_format($buy_and_resale_proposal_item->price, 2) }}</td>
-            <td>{{ $buy_and_resale_proposal_item->delivery }}</td>
+            <td>{{ $buy_and_resale_proposal_item->delivery / 7 }}</td>
             <td>
                 @if (auth()->user()->roles_label == 'Assistant')
                 <form action="{{ route('admin.buy-and-resale-proposal.update-item-delivery', $buy_and_resale_proposal_item->id) }}" method="POST" name="update_item_delivery">
@@ -33,7 +33,8 @@
                     {{ $buy_and_resale_proposal_item->status }}
                 @endif
             </td>
-            <td>{{ $buy_and_resale_proposal_item->notification_date }}</td>
+            <?php $added_to_date = $buy_and_resale_proposal_item->delivery / 7; ?>
+            <td>{{ date('Y-m-d', strtotime($buy_and_resale_proposal_item->created_at. "+".$added_to_date." day")) }}</td>
         </tr>
         @endforeach
     </tbody>

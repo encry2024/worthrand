@@ -25,11 +25,11 @@ trait SealAttribute
         foreach($files as $file) {
             $file_controller[] = 
                 '<tr>
-                <td>
-                '.$file.'
-                <a class="btn btn-warning btn-sm text-white pull-right" href="'.route('admin.seal.download', [$this->id, $file]).'"><i class="fa fa-download"></i></a>
-                <a class="btn btn-primary btn-sm pull-right" href="'.asset('storage/seal/'.$this->id.'/'.$file) .'" data-toggle="tooltip" title="View File"><i class="fa fa-search"></i></a>
-                </td>
+                    <td>
+                        '.$file.'
+                        <a class="btn btn-warning btn-sm text-white pull-right" href="'.route('admin.seal.download', [$this->id, $file]).'"><i class="fa fa-download"></i></a>
+                        <a class="btn btn-primary btn-sm pull-right" href="'.asset('storage/seal/'.$this->id.'/'.$file) .'" data-toggle="tooltip" title="View File"><i class="fa fa-search"></i></a>
+                    </td>
                 </tr>';
         }
 
