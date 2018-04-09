@@ -2,7 +2,7 @@
 
 namespace App\Models\Aftermarket\Traits\Relationship;
 
-use App\Models\Aftermarket\AftermarketPricingHistory;
+use App\Models\PricingHistory\PricingHistory;
 use App\Models\IndentedProposal\IndentedProposalItem;
 use App\Models\BuyAndResaleProposal\BuyAndResaleProposalItem;
 /**
@@ -45,9 +45,9 @@ trait AftermarketRelationship
     /**
      * @return mixed
      */
-    public function indented_proposal_items()
+    public function pricing_histories()
     {
-        return $this->morphMany(IndentedProposalItem::class, 'indented_proposal_itemmable');
+        return $this->morphMany(PricingHistory::class, 'pricing_historable');
     }
 
     /**

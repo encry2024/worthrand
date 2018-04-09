@@ -5,7 +5,7 @@ namespace App\Models\Project\Traits\Relationship;
 use App\Models\IndentedProposal\IndentedProposalItem;
 use App\Models\BuyAndResaleProposal\BuyAndResaleProposalItem;
 use App\Models\Customer\Customer;
-use App\Models\Project\ProjectPricingHistory;
+use App\Models\PricingHistory\PricingHistory;
 
 /**
  * Trait ProjectRelationship.
@@ -25,7 +25,7 @@ trait ProjectRelationship
      */
     public function pricing_histories()
     {
-        return $this->hasMany(ProjectPricingHistory::class);
+        return $this->morphMany(PricingHistory::class, 'pricing_historable');
     }
 
     /**

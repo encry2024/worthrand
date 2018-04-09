@@ -4,7 +4,7 @@ namespace App\Models\Seal\Traits\Relationship;
 
 use App\Models\IndentedProposal\IndentedProposalItem;
 use App\Models\BuyAndResaleProposal\BuyAndResaleProposalItem;
-use App\Models\Seal\SealPricingHistory;
+use App\Models\PricingHistory\PricingHistory;
 
 /**
  * Trait SealRelationship.
@@ -24,8 +24,16 @@ trait SealRelationship
      */
     public function pricing_histories()
     {
-        return $this->hasMany(SealPricingHistory::class);
+        return $this->morphMany(PricingHistory::class, 'pricing_historable');
     }
+
+    // /**
+    //  * @return mixed
+    //  */
+    // public function pricing_histories()
+    // {
+    //     return $this->hasMany(SealPricingHistory::class);
+    // }
 
     /**
      * @return mixed

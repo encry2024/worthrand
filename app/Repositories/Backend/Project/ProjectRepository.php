@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 # Models
 use App\Models\Project\Project;
-use App\Models\Project\ProjectPricingHistory;
+use App\Models\PricingHistory\PricingHistory;
 use Auth;
 # Exceptions
 use App\Exceptions\GeneralException;
@@ -271,21 +271,22 @@ class ProjectRepository extends BaseRepository
      * @return PricingHistory
      * @throws GeneralException
      */
-    public function add_pricing_history(array $data, $project) : ProjectPricingHistory
+    public function add_pricing_history(array $data, $project) : PricingHistory
     {
         return DB::transaction(function () use ($data, $project) {
-            $pricing_history    = ProjectPricingHistory::create([
-                'project_id'    =>  $project->id,
-                'po_number'     =>  $data['po_number'],
-                'pricing_date'  =>  date('Y-m-d', strtotime($data['pricing_date'])),
-                'price'         =>  $this->strip_currency($data['price']),
-                'terms'         =>  $data['terms'],
-                'delivery'      =>  $data['delivery'],
-                'fpd_reference' =>  $data['fpd_reference'],
-                'wpc_reference' =>  $data['wpc_reference']
+            $pricing_history = new PricingHistory([
+                'po_number'                 =>  $data['po_number'],
+                'pricing_date'              =>  date('Y-m-d', strtotime($data['pricing_date'])),
+                'price'                     =>  $this->strip_currency($data['price']),
+                'terms'                     =>  $data['terms'],
+                'delivery'                  =>  $data['delivery'],
+                'fpd_reference'             =>  $data['fpd_reference'],
+                'wpc_reference'             =>  $data['wpc_reference']
+                'pricing_historable_id'     =>  $project->id,
+                'pricing_historable_type'   =>  'App\\Models\\Project\\Project',
             ]);
 
-            if ($pricing_history) {
+            if ($project->pricing_histories()->save($pricing_history)) {
 
                 $auth_link  = "<a href='".route('admin.auth.user.show', auth()->id())."'>".Auth::user()->full_name.'</a>';
                 $asset_link = "<a href='".route('admin.project.show', $project->id)."'>".$project->name.'</a>';
@@ -306,7 +307,7 @@ class ProjectRepository extends BaseRepository
      * @return PricingHistory
      * @throws GeneralException
      */
-    public function update_pricing_history(array $data, $project, $pricing_history) : ProjectPricingHistory
+    public function update_pricing_history(array $data, $project, $pricing_history) : PricingHistory
     {
         return DB::transaction(function () use ($data, $project, $pricing_history) {
             if($pricing_history->update([
