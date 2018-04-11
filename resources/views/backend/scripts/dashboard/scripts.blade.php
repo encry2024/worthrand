@@ -12,6 +12,40 @@ $(document).ready(function() {
         let targetSale          = "{!! Auth::user()->target_revenues->last()->target_sale !!}";
     @endif
 
+    current_currency.change(function(data) {
+        let currency = $(this);
+        let old_curr = currency.data("previous_currency");
+        currency.data("previous_currency", currency.val());
+        let new_curr = currency.val();
+        let amount = currency.data('amount');
+        let currency_label = $("#current_sale_label");
+        const target_sale_label = $("#target_sale_label"),
+        target_currency = $("#target_currency");
+
+        $.ajax({
+            type: 'POST',
+            url: "{{ route('admin.currency.convert') }}",
+            data: {
+                _token: '{{ csrf_token() }}',
+                from: old_curr,
+                to: new_curr
+            },
+            dataType: 'JSON',
+            success: function(ratio) {
+                total_currency              = parseFloat(currency.attr('data-amount')).toFixed(2) * ratio;
+                converted_target_sale       = parseFloat(target_sale_label.attr('data-target-sale')).toFixed(2) * ratio;
+                formatted_cts               = converted_target_sale;
+
+                currency.attr('data-amount', total_currency.toFixed(2));
+                currency_label.text(new_curr + " " + total_currency.toLocaleString());
+
+                target_sale_label.attr('data-target-sale', converted_target_sale.toFixed(2));
+                target_sale_label.text(formatted_cts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                target_currency.text(new_curr);
+            }
+        });
+    });
+
     // Indented Proposal Report
     for(let i=0; i<Object.keys(indentedObj).length; i++) {
         let data = indentedObj[i];
