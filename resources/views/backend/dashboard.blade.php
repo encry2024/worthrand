@@ -24,11 +24,22 @@
                                     <br>
                                     <div id="breakdown_container"></div>
                                     <hr>
+                                    <h5 class="card-title">Current Currency:</h5>
+                                    <div class="input-group-prepend">
+                                        <select name="currency" id="currency-dropdown" data-amount="{{ Auth::user()->target_revenues->last()->current_sale }}" class="form-control chosen-select currency-dropdown">
+                                            <option value="PHP">PHP</option>
+                                            <option value="JPY">JPY</option>
+                                            <option value="USD" selected>USD</option>
+                                            <option value="SGD">SGD</option>
+                                            <option value="EUR">EUR</option>
+                                        </select>
+                                    </div>
+                                    <hr>
                                     <h5 class="card-title">Current Sale:</h5>
-                                    <h3>USD {{ number_format(Auth::user()->target_revenues->last()->current_sale, 2) }}</h3>
+                                    <h3 id="current_sale_label">USD {{ number_format(Auth::user()->target_revenues->last()->current_sale, 2) }}</h3>
                                     <hr>
                                     <h5 class="card-title">Target Sale:</h5>
-                                    <h3>USD {{ number_format(Auth::user()->target_revenues->last()->target_sale, 2) }}</h3>
+                                    <h3><span id="target_currency">USD</span> <span id="target_sale_label" data-target-sale="{{ Auth::user()->target_revenues->last()->target_sale }}">{{ number_format(Auth::user()->target_revenues->last()->target_sale, 2) }}</span></h3>
                                 </div>
                             </div>
                         </div>

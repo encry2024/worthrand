@@ -181,7 +181,7 @@
                                                     <option value="EUR">EUR</option>
                                                 </select>
                                             </div>
-                                            <input type="text" name="price[]" class="form-control numeric-input"
+                                            <input type="text" name="price[]" class="form-control numeric-input price_input"
                                             id="price"
                                             value="{{ is_null($ordered_product->latest_price) ? '' : $ordered_product->latest_price->price }}">
                                         </div>
@@ -217,7 +217,8 @@
 @push('after-scripts')
     <script>
         const current_currency = $(".currency-dropdown");
-        current_currency.data("previous_currency", current_currency.val());
+        current_currency.data("previous_currency", current_currency.val()),
+        price_input = $(".price_input");
 
         current_currency.change(function(data) {
             var currency = $(this);
@@ -242,6 +243,10 @@
                     currency.closest('tr').find('input#price').val(total_currency.toFixed(2));
                 }
             });
+        });
+
+        price_input.on('keyup', function() {
+            current_currency.attr('data-amount', $(this).val());
         });
     </script>
 @endpush

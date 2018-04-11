@@ -55,7 +55,7 @@
                             @include('backend.project.show.tabs.overview')
                         </div><!--tab-->
 
-                        <div class="tab-pane active" id="upload" role="tabpanel" aria-expanded="true">
+                        <div class="tab-pane" id="upload" role="tabpanel" aria-expanded="true">
                             @include('backend.project.show.tabs.upload')
                         </div><!--tab-->
 

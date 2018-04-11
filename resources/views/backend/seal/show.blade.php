@@ -55,7 +55,7 @@
                             @include('backend.seal.show.tabs.overview')
                         </div><!--tab-->
 
-                        <div class="tab-pane active" id="upload" role="tabpanel" aria-expanded="true">
+                        <div class="tab-pane" id="upload" role="tabpanel" aria-expanded="true">
                             @include('backend.seal.show.tabs.upload')
                         </div><!--tab-->
 

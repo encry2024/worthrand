@@ -18,7 +18,7 @@
         </thead>
 
         <tbody>
-            @if(count($files))
+            @if ($files != '')
                 @foreach ($files as $file)
                     <tr>
                         <td>{{ $file }}</td>
@@ -29,9 +29,9 @@
                     </tr>
                 @endforeach
             @else
-                <tr>
-                    <td colspan="2"><p class="text-center">There are no uploaded files</p></td>
-                </tr>
+            <tr>
+                <td colspan="2"><p class="text-center">There are no uploaded files</p></td>
+            </tr>
             @endif
         </tbody>
     </table>

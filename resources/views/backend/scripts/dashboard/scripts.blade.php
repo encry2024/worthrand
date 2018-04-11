@@ -6,6 +6,8 @@ $(document).ready(function() {
     let buyAndResaleDataArr = [];
     let buyAndResaleProfit  = 0;
     let indentedProfit      = 0;
+    const current_currency = $(".currency-dropdown");
+    current_currency.data("previous_currency", current_currency.val());
     @if(Auth::user()->roles_label == 'Sales Agent')
         let targetSale          = "{!! Auth::user()->target_revenues->last()->target_sale !!}";
     @endif
@@ -131,58 +133,58 @@ $(document).ready(function() {
     @if(Auth::user()->roles_label == 'Sales Agent')
     // Breakdown Container Highchart
     Highcharts.chart('breakdown_container', {
-    chart: {
-        type: 'column'
-    },
-
-    title: {
-        text: 'Sales Breakdown'
-    },
-
-    xAxis: {
-        type: 'category'
-    },
-
-    yAxis: {
-        title: {
-            text: 'Breakdown Current Sales'
+        chart: {
+            type: 'column'
         },
-        min: 0,
-        max: targetSale,
-        tickInterval: 100000,
-    },
 
-    legend: {
-        enabled: false
-    },
+        title: {
+            text: 'Sales Breakdown'
+        },
 
-    plotOptions: {
-        series: {
-            borderWidth: 0,
-            dataLabels: {
-                enabled: true,
-                format: '{point.y:,.2f}'
+        xAxis: {
+            type: 'category'
+        },
+
+        yAxis: {
+            title: {
+                text: 'Breakdown Current Sales'
+            },
+            min: 0,
+            max: targetSale,
+            tickInterval: 100000,
+        },
+
+        legend: {
+            enabled: false
+        },
+
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y:,.2f}'
+                }
             }
-        }
-    },
+        },
 
-    tooltip: {
-        headerFormat: '<span style="font-size:11px">{point.key}</span><br>',
-        pointFormat: '<span style="color:{series.color}">Sales</span>: <b>{point.y:,.2f}</b><br/>'
-    },
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{point.key}</span><br>',
+            pointFormat: '<span style="color:{series.color}">Sales</span>: <b>{point.y:,.2f}</b><br/>'
+        },
 
-    series: [{
-        name: 'Indented Proposal',
-        colorByPoint: true,
-        data: [{
-            name: 'Indented Proposal Sales',
-            y: indentedProfit
-        }, {
-            name: 'Buy and Resale Proposal Sales',
-            y: buyAndResaleProfit
+        series: [{
+            name: 'Indented Proposal',
+            colorByPoint: true,
+            data: [{
+                name: 'Indented Proposal Sales',
+                y: indentedProfit
+            }, {
+                name: 'Buy and Resale Proposal Sales',
+                y: buyAndResaleProfit
+            }]
         }]
-    }]
-});
+    });
     $('.highcharts-credits').hide();
     @endif
 });

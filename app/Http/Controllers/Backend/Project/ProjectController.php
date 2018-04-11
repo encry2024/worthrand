@@ -87,6 +87,8 @@ class ProjectController extends Controller
     public function show(Project $project, ManageProjectRequest $request)
     {
         if(!File::exists('storage/project/'.$project->id)) {
+            $files = '';
+
             return view('backend.project.show')->withModel($project)->withFiles($files);
         } else {
             $files = collect(File::allFiles('storage/project/'.$project->id))->filter(function ($file) {

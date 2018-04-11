@@ -98,9 +98,12 @@
             // let files = selected_product.model_files;
             //console.log(selected_product.model_files);
             uploaded_files_container.empty();
-            _.forEach(selected_product.model_files, function(element, i) {
-                uploaded_files_container.append(element);
-            }); 
+
+            if (selected_product.model_files.length > 0) {
+                _.forEach(selected_product.model_files, function(element, i) {
+                    uploaded_files_container.append(element);
+                });
+            }
         });
 
         $("#add_product_btn").on('click', function () {

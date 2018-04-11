@@ -33,7 +33,7 @@
                     <div class="form-group row">
                         <label for="target_revenue" class="col-md-2 form-control-label">Current Revenue</label>
                         <div class="col-md-10">
-                            <input value="{{ $user->target_revenues ? 'N/A' : number_format($user->target_revenues->last()->current_sale, 2) }}" type="text" name="target_revenue" class="form-control" id="current_target_revenue" disabled>
+                            <input value="{{ count($user->target_revenues) ? number_format($user->target_revenues->last()->current_sale, 2) : 'N/A' }}" type="text" name="target_revenue" class="form-control" id="current_target_revenue" disabled>
                         </div><!--col-->
                     </div><!--form-group-->
 
@@ -41,7 +41,7 @@
                         <label for="target_revenue" class="col-md-2 form-control-label">Target Revenue</label>
 
                         <div class="col-md-10">
-                            <input value="{{ $user->target_revenues ? 'N/A' : number_format($user->target_revenues->last()->target_sale, '2') }}" type="text" name="target_revenue" class="form-control" id="target_revenue" disabled>
+                            <input value="{{ count($user->target_revenues) ? number_format($user->target_revenues->last()->target_sale, '2') : 'N/A' }}" type="text" name="target_revenue" class="form-control" id="target_revenue" disabled>
                         </div><!--col-->
                     </div><!--form-group-->
                 </div><!--col-->
@@ -87,15 +87,17 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+
                 <div class="modal-body">
                     <div class="form-group row">
                         <label for="target_revenue" class="col-md-4 form-control-label">Current Revenue</label>
 
                         <div class="col-md-8">
-                            <input value="{{ $user->target_revenues ? 'N/A' : $user->target_revenues->last()->current_sale }}" type="text" name="target_sale" class="form-control numeric-input" id="current_target_revenue">
+                            <input value="{{ count($user->target_revenues) ? $user->target_revenues->last()->current_sale : 'N/A' }}" type="text" name="target_sale" class="form-control numeric-input" id="current_target_revenue">
                         </div><!--col-->
                     </div><!--form-group-->
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dark" onclick="$('#target_revenue_form').submit();">Save changes</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
