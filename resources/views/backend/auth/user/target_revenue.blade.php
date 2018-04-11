@@ -33,7 +33,7 @@
                     <div class="form-group row">
                         <label for="target_revenue" class="col-md-2 form-control-label">Current Revenue</label>
                         <div class="col-md-10">
-                            <input value="{{ $user->target_revenues ? number_format($user->target_revenues->last()->current_sale, 2) : 'N/A' }}" type="text" name="target_revenue" class="form-control" id="current_target_revenue" disabled>
+                            <input value="{{ $user->target_revenues ? 'N/A' : number_format($user->target_revenues->last()->current_sale, 2) }}" type="text" name="target_revenue" class="form-control" id="current_target_revenue" disabled>
                         </div><!--col-->
                     </div><!--form-group-->
 
@@ -41,7 +41,7 @@
                         <label for="target_revenue" class="col-md-2 form-control-label">Target Revenue</label>
 
                         <div class="col-md-10">
-                            <input value="{{ $user->target_revenues ? number_format($user->target_revenues->last()->target_sale, '2') : 'N/A' }}" type="text" name="target_revenue" class="form-control" id="target_revenue" disabled>
+                            <input value="{{ $user->target_revenues ? 'N/A' : number_format($user->target_revenues->last()->target_sale, '2') }}" type="text" name="target_revenue" class="form-control" id="target_revenue" disabled>
                         </div><!--col-->
                     </div><!--form-group-->
                 </div><!--col-->
@@ -58,13 +58,19 @@
                         </thead>
 
                         <tbody>
-                            @foreach ($user->target_revenues->last()->target_revenue_histories as $target_revenue_history)
-                            <tr>
-                                <td>{{ date('F d, Y', strtotime($target_revenue_history->created_at)) }}</td>
-                                <td>{{ number_format($target_revenue_history->collected, '2') }}</td>
-                                <td>{{ $target_revenue_history->target_revenue_historable_type }}</td>
-                            </tr>
-                            @endforeach
+                            @if (count($user->target_revenues))
+                                @foreach ($user->target_revenues->last()->target_revenue_histories as $target_revenue_history)
+                                <tr>
+                                    <td>{{ date('F d, Y', strtotime($target_revenue_history->created_at)) }}</td>
+                                    <td>{{ number_format($target_revenue_history->collected, '2') }}</td>
+                                    <td>{{ $target_revenue_history->target_revenue_historable_type }}</td>
+                                </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="3"><p class="text-center">There are no records for this user's target revenue.</p></td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -86,7 +92,7 @@
                         <label for="target_revenue" class="col-md-4 form-control-label">Current Revenue</label>
 
                         <div class="col-md-8">
-                            <input value="{{ $user->target_revenues ? $user->target_revenues->last()->current_sale : 'N/A' }}" type="text" name="target_sale" class="form-control numeric-input" id="current_target_revenue">
+                            <input value="{{ $user->target_revenues ? 'N/A' : $user->target_revenues->last()->current_sale }}" type="text" name="target_sale" class="form-control numeric-input" id="current_target_revenue">
                         </div><!--col-->
                     </div><!--form-group-->
                 </div>
