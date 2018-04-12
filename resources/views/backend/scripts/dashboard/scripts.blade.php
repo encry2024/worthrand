@@ -8,43 +8,10 @@ $(document).ready(function() {
     let indentedProfit      = 0;
     const current_currency = $(".currency-dropdown");
     current_currency.data("previous_currency", current_currency.val());
+
     @if(Auth::user()->roles_label == 'Sales Agent')
         let targetSale          = "{!! Auth::user()->target_revenues->last()->target_sale !!}";
     @endif
-
-    current_currency.change(function(data) {
-        let currency = $(this);
-        let old_curr = currency.data("previous_currency");
-        currency.data("previous_currency", currency.val());
-        let new_curr = currency.val();
-        let amount = currency.data('amount');
-        let currency_label = $("#current_sale_label");
-        const target_sale_label = $("#target_sale_label"),
-        target_currency = $("#target_currency");
-
-        $.ajax({
-            type: 'POST',
-            url: "{{ route('admin.currency.convert') }}",
-            data: {
-                _token: '{{ csrf_token() }}',
-                from: old_curr,
-                to: new_curr
-            },
-            dataType: 'JSON',
-            success: function(ratio) {
-                total_currency              = parseFloat(currency.attr('data-amount')).toFixed(2) * ratio;
-                converted_target_sale       = parseFloat(target_sale_label.attr('data-target-sale')).toFixed(2) * ratio;
-                formatted_cts               = converted_target_sale;
-
-                currency.attr('data-amount', total_currency.toFixed(2));
-                currency_label.text(new_curr + " " + total_currency.toLocaleString());
-
-                target_sale_label.attr('data-target-sale', converted_target_sale.toFixed(2));
-                target_sale_label.text(formatted_cts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-                target_currency.text(new_curr);
-            }
-        });
-    });
 
     // Indented Proposal Report
     for(let i=0; i<Object.keys(indentedObj).length; i++) {
@@ -58,7 +25,8 @@ $(document).ready(function() {
         });
     }
 
-    const indentedProposalReportOutput =_(indentedDataArr).groupBy('id').map((objs, key) => ({
+    // Indented Proposal Report Output
+    let indentedProposalReportOutput =_(indentedDataArr).groupBy('id').map((objs, key) => ({
         'id': key,
         'name': objs[0].name,
         'total_proposal': _.sumBy(objs, 'total_proposal'),
@@ -77,7 +45,8 @@ $(document).ready(function() {
         });
     }
 
-    const buyAndResaleProposalReportOutput =_(buyAndResaleDataArr).groupBy('id').map((objs, key) => ({
+    // Buy and Resale Proposal Report Output
+    let buyAndResaleProposalReportOutput =_(buyAndResaleDataArr).groupBy('id').map((objs, key) => ({
         'id': key,
         'name': objs[0].name,
         'total_proposal': _.sumBy(objs, 'total_proposal'),
@@ -94,10 +63,45 @@ $(document).ready(function() {
         indentedProfit = indentedProfit + indentedProposalReportOutput[i].y
     }
 
-    console.log(indentedProfit);
+    // Currenct Currency Change
+    current_currency.change(function(data) {
+        let currency            = $(this);
+        let old_curr            = currency.data("previous_currency");
+        currency.data("previous_currency", currency.val());
+        let new_curr            = currency.val();
+        let amount              = currency.data('amount');
+        let currency_label      = $("#current_sale_label");
+        const target_sale_label = $("#target_sale_label"),
+        target_currency         = $("#target_currency");
+
+        $.ajax({
+            type: 'POST',
+            url: "{{ route('admin.currency.convert') }}",
+            data: {
+                _token: '{{ csrf_token() }}',
+                from: old_curr,
+                to: new_curr
+            },
+            dataType: 'JSON',
+            success: function(ratio) {
+                total_currency              = parseFloat(currency.attr('data-amount')).toFixed(2) * ratio;
+                converted_target_sale       = parseFloat(target_sale_label.attr('data-target-sale')).toFixed(2) * ratio;
+
+                currency.attr('data-amount', total_currency.toFixed(2));
+                currency_label.text(new_curr + " " + total_currency.toLocaleString());
+
+                target_sale_label.attr('data-target-sale', converted_target_sale.toFixed(2));
+                target_sale_label.text(converted_target_sale.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                target_currency.text(new_curr);
+
+                // Call Update Breakdown Chart Function
+                updateBreakdownChart(converted_target_sale, ratio);
+            }
+        });
+    });
 
     // Indented Proposal Report Highchart
-    Highcharts.chart('indented_proposal_container', {
+    const indented_proposal_chart = Highcharts.chart('indented_proposal_container', {
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,
@@ -131,7 +135,7 @@ $(document).ready(function() {
     $('.highcharts-credits').hide();
 
     // Buy and Resale Proposal Report Highchart
-    Highcharts.chart('buy_and_resale_proposal_container', {
+    const buy_and_resale_proposal_chart = Highcharts.chart('buy_and_resale_proposal_container', {
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,
@@ -164,9 +168,10 @@ $(document).ready(function() {
         }]
     });
     $('.highcharts-credits').hide();
-    @if(Auth::user()->roles_label == 'Sales Agent')
+
     // Breakdown Container Highchart
-    Highcharts.chart('breakdown_container', {
+    @if(Auth::user()->roles_label == 'Sales Agent')
+    const breakdown_chart = new Highcharts.chart('breakdown_container', {
         chart: {
             type: 'column'
         },
@@ -219,7 +224,22 @@ $(document).ready(function() {
             }]
         }]
     });
+
     $('.highcharts-credits').hide();
     @endif
+
+    function updateBreakdownChart(converted_target_sale, ratio) {
+        breakdown_chart.yAxis[0].setExtremes(null, converted_target_sale);
+
+        breakdown_chart.series[0].update({
+            data: [{
+                name: 'Indented Proposal Sales',
+                y: total_currency
+            }, {
+                name: 'Buy and Resale Proposal Sales',
+                y: buyAndResaleProfit * ratio
+            }]
+        });
+    }
 });
 </script>
